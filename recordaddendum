@@ -1,0 +1,15 @@
+<div style='position:relative;float:left;width:600;' >
+<form action='search'>
+<input type='text' name='word' /> <input type='submit' value='Search Word' />
+</form>
+</div>
+<div style='psition:relative;'>
+<a href='stoprecord'>Stop recording</a>
+</div>
+<div style='position:relative;float:right' >
+
+<form action='add'>
+<input type='text' name='word' /><input type='submit' value='Add Word' />
+</form>
+</div>
+</div>

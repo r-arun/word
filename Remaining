@@ -1,0 +1,28 @@
+SyntaxError: EOL while scanning string literal
+>>> def extractFirst(i,j):
+...     arr=j.split('.')
+...     if(len(arr)>1):
+...             newarr=arr[1].split(' ')
+...             if(len(newarr)>1):
+...                     li=len(i)
+...                     word=strip(newarr[0])
+...                     lj=len(word)
+...                     mylen=min(li,lj)
+...                     if(mylen>5): mylen-=2
+...                     if(mylen==5): mylen=4
+...                     if(word[:mylen]==i[:mylen]):
+...                             return word
+...     return False
+... 
+>>>                     mylen=min(li,lj)
+
+
+
+
+
+>>> def collectVerb(j):
+...     if(j.find(':')>=0):
+...             arr=j.split('.')[1]
+...             return arr.split(':')[0]
+...     else: return False
+

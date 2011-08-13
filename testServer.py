@@ -1,7 +1,12 @@
 import random
 import pickle
 from synonymList import Synonymn
-from selectOption import getTestWords
+from random import randint
+#from selectOption import getTestWords
+def getTestWords(meaning,word):
+	wlen=len(meaning)
+	return meaning[randint(0,wlen-1)]
+
 class Test():
 	def __init__(self):
 		fd=open('finished.trie','rb')
@@ -20,7 +25,8 @@ class Test():
 
 	def addToResultSet(self,word):
 		meaning=self.dic[word][1]
-		testMeaning=getTestWords(meaning,word)
+		#testMeaning=getTestWords(meaning,word)
+		testMeaning=meaning
 		if(testMeaning==[]): return False
 		attempt=3
 		while attempt>=0:

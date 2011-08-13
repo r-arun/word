@@ -1,0 +1,8 @@
+<form action='search'>
+<input type='text' name='word' />
+<input type='submit' value='Search'/>
+</form>
+<form action='add'>
+<input type='text' name='word' />
+<input type='submit' value='Add' />
+</form>

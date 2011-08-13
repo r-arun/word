@@ -9,7 +9,9 @@ from testServer import Test
 serverStateObject=None
 
 def printRecordListing(arr):
-	return '<td width="20%"><a href="rewind?filename='+arr[0]+'">'+arr[0]+'</a></td>\n<td width="40%">'+arr[1]+'</td><td width="40%">'+arr[2]+'</td>'
+	print "DEBUG: ",arr
+	#return '<td width="20%"><a href="rewind?filename='+arr[0]+'">'+arr[0]+'</a></td>\n<td width="40%">'+arr[1]+'</td><td width="40%">'+arr[2]+'</td>'
+	return '<td width="20%">'+arr+'</td>'
 
 def paintAdded(word):
 	return '<div style="background-color:#2222ee;color:white;text-align:center">'+word+' added</div>'
@@ -62,13 +64,14 @@ class ServerState():
 		self.lastOptions=[]
 		self.testReport=[]
 
-	def displayQuestion(self,obj):
+	def displayQuestion(self,obj,total):
 		self.lastOptions=[]
 		word=obj[0]
 		self.testReport.append([word])
 		options=obj[1]
 		cnt=0
-		ret='<h5>'+word+'</h5>\n<form action="midtest">'
+		ret=paintSpecialMsg(str(len(self.testReport))+' of '+str(total)+' words')
+		ret+='<h5>'+word+'</h5>\n<form action="midtest">'
 		for i in options.keys():
 			ret+='<input type="radio" name="answer" value="'+str(cnt)+'" >'+options[i]+'</a><br />\n'
 			self.lastOptions.append(options[i])
@@ -189,14 +192,18 @@ class MyHandler(BaseHTTPRequestHandler):
 			else:
 				if(funcname=='starttest'):
 					serverStateObject.testObj=Test()
+					serverStateObject.testWord=-1
+					serverStateObject.lastOptions=[]
+					serverStateObject.testReport=[]
 					serverStateObject.testCount=int(argsdic['count'])
+					serverStateObject.testTotal=int(argsdic['count'])
 					print 'test'
-					self.wfile.write(serverStateObject.displayQuestion(serverStateObject.testObj.test(4)))
+					self.wfile.write(serverStateObject.displayQuestion(serverStateObject.testObj.test(4),serverStateObject.testTotal))
 					serverStateObject.testCount-=1
 				elif(funcname=='midtest'):
 					print serverStateObject.checkAnswer(argsdic['answer'])
 					if(serverStateObject.testCount):
-						self.wfile.write(serverStateObject.displayQuestion(serverStateObject.testObj.test(4)))
+						self.wfile.write(serverStateObject.displayQuestion(serverStateObject.testObj.test(4),serverStateObject.testTotal))
 						serverStateObject.testCount-=1
 					else:
 						self.wfile.write(serverStateObject.testStatistics())
@@ -240,6 +247,7 @@ class MyHandler(BaseHTTPRequestHandler):
 					elif(funcname=='rewind'):
 						print "REWIND MACHI"
 						serverStateObject.recordObj=self.getRecordObject()
+						print (argsdic['filename'])
 						if(serverStateObject.recordObj.reloadFile(argsdic['filename'])):
 							serverStateObject.setState(2)
 							serverStateObject.setAddendum()
@@ -263,7 +271,9 @@ class MyHandler(BaseHTTPRequestHandler):
 						self.send_response(200)
 						self.send_header('Content-type','text/html')
 						self.end_headers()
-						if(s.addWord(argsdic['word'])):
+						if(showWord().search(argsdic['word'])):
+							self.wfile.write(argsdic['word']+" already exists in dictionary"+serverStateObject.addendum)
+						elif(s.addWord(argsdic['word'])):
 							self.wfile.write(paintAdded(argsdic['word'])+showWord().showWord(argsdic['word'])+serverStateObject.addendum)
 							if(serverStateObject.recordState==1):
 								serverStateObject.recordObj.record(argsdic['word'])	
